@@ -22,10 +22,12 @@ func C() *Client {
 	return p
 }
 
-func (c *Client) SetUserAgent(val string) {
+func (c *Client) SetUserAgent(val string) *Client {
 	c.SetGlobalHeader("User-Agent", val)
+	return c
 }
 
-func (c *Client) SetAuthorization(val string) {
+func (c *Client) SetAuthorization(val string) *Client {
 	c.SetGlobalHeader("Authorization", val)
+	return c
 }
