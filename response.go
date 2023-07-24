@@ -6,24 +6,25 @@ import (
 
 func newResponse(req *Request, resp *http.Response) *Response {
 	return &Response{
-		req:  req,
-		self: resp,
+		Response: resp,
+		req:      req,
 	}
 }
 
 type Response struct {
-	self *http.Response
-	req  *Request
+	*http.Response
+
+	req *Request
 }
 
 // status code >= 400.
 func (r Response) IsError() bool {
-	return isHttpError(r.self.StatusCode)
+	return isHttpError(r.StatusCode)
 }
 
 // status code >= 200 and <= 299.
 func (r Response) IsSuccess() bool {
-	return isHttpSuccess(r.self.StatusCode)
+	return isHttpSuccess(r.StatusCode)
 }
 
 // Object from Request.SetError().

@@ -174,12 +174,13 @@ func (r *Request) exec(ctx context.Context, method string, urld string) (*Respon
 		}
 	}
 
+	// Set params.
 	if len(r.params) > 0 {
 		req.URL.RawQuery = r.params.Encode()
 		r.cl.log.Debugf("query: %s", req.URL.RawQuery)
 	}
 
-	// wait limiter
+	// Wait limiter.
 	if r.cl.limiter != nil {
 		r.cl.log.Debugf("limiter wait...")
 		if err = r.cl.limiter.Wait(ctx); err != nil {
@@ -187,13 +188,13 @@ func (r *Request) exec(ctx context.Context, method string, urld string) (*Respon
 		}
 	}
 
-	// send request.
+	// Send request.
 	hResp, err := r.cl.self.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	// make response.
+	// Make response.
 	if err = r.unmarshalResponse(hResp); err != nil {
 		return nil, err
 	}
