@@ -48,25 +48,31 @@ type Request struct {
 
 // GET request.
 func (r Request) Get(ctx context.Context, url string) (*Response, error) {
-	resp, err := r.exec(ctx, http.MethodGet, url)
-	if err != nil {
-		r.cl.log.Err("", err)
-	}
-	return resp, err
+	return r.genRequest(ctx, http.MethodGet, url)
 }
 
 // POST request.
 func (r Request) Post(ctx context.Context, url string) (*Response, error) {
-	resp, err := r.exec(ctx, http.MethodPost, url)
-	if err != nil {
-		r.cl.log.Err("", err)
-	}
-	return resp, err
+	return r.genRequest(ctx, http.MethodPost, url)
+}
+
+// PUT request.
+func (r Request) Put(ctx context.Context, url string) (*Response, error) {
+	return r.genRequest(ctx, http.MethodPut, url)
+}
+
+// PATCH request.
+func (r Request) Patch(ctx context.Context, url string) (*Response, error) {
+	return r.genRequest(ctx, http.MethodPatch, url)
 }
 
 // DELETE request.
 func (r Request) Delete(ctx context.Context, url string) (*Response, error) {
-	resp, err := r.exec(ctx, http.MethodDelete, url)
+	return r.genRequest(ctx, http.MethodDelete, url)
+}
+
+func (r Request) genRequest(ctx context.Context, method, url string) (*Response, error) {
+	resp, err := r.exec(ctx, method, url)
 	if err != nil {
 		r.cl.log.Err("", err)
 	}
