@@ -3,7 +3,7 @@ package vantuz
 import (
 	"context"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -231,14 +231,14 @@ func (r Request) unmarshalResponse(resp *http.Response) error {
 
 	if r.err != nil && isHttpError(resp.StatusCode) {
 		if err := json.Unmarshal(body, r.err); err != nil {
-			return errors.New("text body (failed to unmarshal response error): " + string(body))
+			return fmt.Errorf("unmarshal response error: %w. body: %s", err, string(body))
 		}
 		return err
 	}
 
 	if r.result != nil && isHttpSuccess(resp.StatusCode) {
 		if err := json.Unmarshal(body, r.result); err != nil {
-			return errors.New("text body (failed to unmarshal response): " + string(body))
+			return fmt.Errorf("unmarshal response: %w. body: %s", err, string(body))
 		}
 		return err
 	}
