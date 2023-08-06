@@ -2,6 +2,7 @@ package vantuz
 
 import (
 	"net/http"
+	"net/url"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -16,6 +17,9 @@ type Client struct {
 
 	// global headers.
 	headers map[string]string
+
+	// global query params.
+	queryParams url.Values
 
 	log Logger
 }
@@ -42,6 +46,22 @@ func (c *Client) SetGlobalHeaders(h map[string]string) *Client {
 	for k, v := range h {
 		c.headers[k] = v
 	}
+	return c
+}
+
+func (c *Client) SetUserAgent(val string) *Client {
+	c.SetGlobalHeader("User-Agent", val)
+	return c
+}
+
+func (c *Client) SetAuthorization(val string) *Client {
+	c.SetGlobalHeader("Authorization", val)
+	return c
+}
+
+// Set query params for all requests from this client.
+func (c *Client) SetGlobalQueryParams(vals url.Values) *Client {
+	c.queryParams = vals
 	return c
 }
 

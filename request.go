@@ -17,12 +17,15 @@ func newRequest(cl *Client) *Request {
 		headers: map[string]string{},
 	}
 
-	if len(cl.headers) == 0 {
-		return r
-	}
-
 	for k, v := range cl.headers {
 		r.headers[k] = v
+	}
+
+	if len(cl.queryParams) > 0 {
+		r.params = url.Values{}
+		for k, v := range cl.queryParams {
+			r.params[k] = v
+		}
 	}
 
 	return r
@@ -141,7 +144,12 @@ func (r *Request) SetJsonString(data string) *Request {
 	return r
 }
 
-// Set query params.
+// Get query params.
+func (r *Request) QueryParams() url.Values {
+	return r.params
+}
+
+// Replace request query params.
 func (r *Request) SetQueryParams(params url.Values) *Request {
 	r.params = params
 	return r
@@ -229,7 +237,10 @@ func (r Request) unmarshalResponse(resp *http.Response) error {
 	}
 
 	if r.result != nil && isHttpSuccess(resp.StatusCode) {
-		return json.Unmarshal(body, r.result)
+		if err := json.Unmarshal(body, r.result); err != nil {
+			return errors.New("text body (failed to unmarshal response): " + string(body))
+		}
+		return err
 	}
 
 	return err
